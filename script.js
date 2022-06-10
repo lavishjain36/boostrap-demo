@@ -1,42 +1,122 @@
-//create and built a header layout 
+//Write a logic to get the data 
+async function  getUsers(){
+    let users;
+    try {
+        const data =await fetch("https://62a180cfcc8c0118ef4cebd8.mockapi.io/users",
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+        users=await data.json();
+        console.log(users);
+        
+    } catch (error) {
+        console.log(error);
+    }
+    return users;
 
-document.body.innerHTML=`
-<div class="heading-container">
-<h1>Brewery List</h1>
-<img class="icon" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGneJNdlDUGwFug86BcXicBqv341dcGfFnVw&usqp=CAU">
-</div>
-<div id="mainContainer" class="main-container"></div>
-`
-
-
-const getData=async ()=>{
-  try {
-    const data=await fetch("https://api.openbrewerydb.org/breweries/");
-    const breweries=await data.json();
-    // console.log(breweries);
-    mainContainer.innerHTML="";
-    breweries.forEach(brewery=>{
-      displayData(brewery);
-    })
-
-  } catch (error) {
-    console.log(error);
-  }
 }
 
-getData();
+// getUsers();
+
+//Write a functionality to display the data of the users
+async function displayUsers(){
+
+    let users=await getUsers();
+    console.log(users);
+    const userList=document.querySelector(".user-list");
+    userList.innerHTML="";
+
+    users.forEach(user=>{
+        // console.log(user.name)
+        userList.innerHTML+=`
+        <div class="user-container">
+        <img class="user-avatar" src="${user.avatar}" alt="${user.name}">
+        <h3>${user.name}</h3>
+        <button onClick="deleteUser(${user.id})">Delete</button>
+        <button onClick="editUser(${user.id})">Edit</button>
+        </div>
+
+
+        `
+    });
+
+}
+
+
+displayUsers();
 
 
 
-const displayData=(obj)=>{
-  mainContainer.innerHTML+=`
-  <div class="container">
-  <h3 class="Breid">Breweries ID:<span>${obj.id}</span></h3>
-  <h3 class="common">Breweries Name:<span>${obj.city}</span></h3>  
-  <h3 class="common">Breweries Country:<span>${obj.country}</span></h3>  
-  <h3 class="common">Breweries State:<span>${obj.state}</span></h3>  
-  <h3 class="common">Postal Code::<span>${obj.postal_code}</span></h3> 
-  <h3 class="common">Breweries Website:<span>${obj.website_url}</span></h3>
+//Write a functionality to delete the user data 
+async function deleteUser(id){
+    try {
+        const data=await fetch(`https://62a180cfcc8c0118ef4cebd8.mockapi.io/users/${id}`,
+        {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+        const users=await data.json();
+        console.log(users);
+        displayUsers();
+        
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
 
-  </div>`;
+
+async function addUser(){
+    const userName=document.querySelector(".add-user-name").value;
+    const userAvatar=document.querySelector(".add-user-avatar").value;
+
+    console.log(userName,userAvatar);
+
+    const data=await fetch(
+        "https://62a180cfcc8c0118ef4cebd8.mockapi.io/users",
+        {
+            method: "POST",
+            body:JSON.stringify({
+                name:userName,
+                avatar:userAvatar
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }
+    );
+    displayUsers();
+
+
+}
+
+// addUser();
+
+//TO update the data of the user
+async function editUser(id){
+    const userName=document.querySelector(".edit-user-name").value;
+    const userAvatar=document.querySelector(".edit-user-avatar").value;
+    console.log(userName,userAvatar);
+
+    const data=await fetch(
+        `https://62a180cfcc8c0118ef4cebd8.mockapi.io/users/${id}`,
+        {
+            method: "PUT",
+            body:JSON.stringify({
+                name:userName,
+                avatar:userAvatar
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }
+    );
+    displayUsers();
+    
+
 }
