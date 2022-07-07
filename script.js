@@ -1,55 +1,35 @@
-const poke_container =
-    document.getElementById('poke_container');
-const pokemons_number = 50; // to display 50 pokemons on screen
+async function fun(){
+         
+  try {
 
-
-const fetchPokemons = async () => {
-    for (let i = 1; i <= pokemons_number; i++) {  
-        await getPokemon(i)
+   //Getting input from thw user
+    var n = 0
+    let code = document.getElementById('num').value
+    if(code.length>6 || code.length<6){
+      alert('Enter only 6 Digit Pincode')
+       n = n + 1
     }
-}
-const getPokemon = async id => {
-    const url =
-        `https://pokeapi.co/api/v2/pokemon/${id}`;
-    const data = await fetch(url);// to fetch the data from pokemon api
-    const pokemon = await data.json();
-    createPokemonCard(pokemon);
-    //console.log(pokemon)
-}
-fetchPokemons();
-
-
-function createPokemonCard(pokemon) {
-    const pokemonElement = document.createElement('div');
-    
-    pokemonElement.classList.add('pokemon');
-
-    const name = pokemon.name[0].toUpperCase() + pokemon.name.slice(1);//to make the first letter of name to uppercase
-    //console.log(pokemon.name)
-    
-    const pokeInnerHTML = `
-    <div class= "img-container">
-    <img src = 
-    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png" 
-    alt="pokemon image"/> 
-    </div>
-<div class= "data">
-    <div  class = "info"
-    <h4 class = "number">${pokemon.id}. ${name}</h4>
-    </div>
-    <div class = "ability">
-    <p class= "title"> Ability: ${pokemon.abilities[0].ability.name}</p>
-    </div>
-    <div class= "moves">
-    <p class="title"> Moves: ${pokemon.moves[0].move.name}</p>
-    </div>
-    <div class= "weight">
-    <p class="title"> Weight: ${pokemon.weight}</p>
-    </div>
- </div>   
-    `; // getting id, name, abilities, moves and weight od each pokemon from the api object
-    
-    pokemonElement.innerHTML = pokeInnerHTML;
-    poke_container.appendChild(pokemonElement)
-
+     
+    //Clearing output screen
+    document.getElementById('district').value=null
+    document.getElementById('state').value =null
+    document.getElementById('area').value = null
+    //Getting data from API
+    let pc = await fetch(`https://api.postalpincode.in/pincode/${code}`)
+    let pc1 = await pc.json()
+    console.log(pc1[0].PostOffice)
+    if(pc1[0].PostOffice===null && n<1){
+      alert('Wrong pincode or Data currently unavaliable')
+    }
+    //Displaying corresponding values in the output screen
+    document.getElementById('state').value= pc1[0].PostOffice[0].State
+    document.getElementById('district').value = pc1[0].PostOffice[0].District
+    document.getElementById('area').value = pc1[0].PostOffice[0].Name
+    console.log(pc1[0])
+    n = 0
+  } catch (error) {
+    console.log(error)
+  }
+  
+  
 }
