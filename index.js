@@ -1,33 +1,52 @@
-// 1.setup our http Request 
-let xhr=new XMLHttpRequest();//created an object xhr 
+let data = [
+  {
+    name: "Joey",
+    age: 3,
+    type: "dog",
+  },
 
-//2.Open The request
+  {
+    name: "Lizzy",
+    age: 6,
+    type: "dog",
+  },
 
-xhr.open('GET',"https://restcountries.com/v3.1/all")
+  {
+    name: "Red",
+    age: 2,
+    type: "dog",
+  },
 
+  {
+    name: "Sheru",
+    age: 4,
+    type: "dog",
+  },
 
+  {
+    name: "Butters",
+    age: 6,
+    type: "dog",
+  },
 
+  {
+    name: "john",
+    age: 45,
+    type: "human",
+  },
+];
 
-//3.Setup our listener to process the complete request
+// Sum of all dogs ages in human years
 
-xhr.onload=function(){
-    //get the data 
-    if(xhr.status>=200&& xhr.status<300){
-        //only if request is ok and received the data 
-        let data=JSON.parse(this.response);
-        console.log(data);
-        // console.log(this.response);
-       //get india data 
-      
-        console.log(data[186].population);
-    }else{
-        //RUn if the request is not ok
-        console.log("Error");
-    }
-}
+// MRF approch
+// 1.Identify the type of the dog
+// 1.return the data where dog type="dog"
+// 2.Multiply dog age by 7 that===human age
+// new age of the dog
+// multiply the dog age *7(MAP)
+// 3.sum of the all the dog ages
+// reduce function
 
-
-//4.Send the request
-xhr.send();
-
-
+//chaining over MRF
+let dogtotleage=data.filter((d)=>d.type==="dog").map((d)=>d.age*7).reduce((a,b)=>a+b);
+console.log(dogtotleage);
